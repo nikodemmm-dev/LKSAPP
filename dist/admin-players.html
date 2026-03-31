@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Zawodnicy – Panel administratora – LKS Wilamowiczanka</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-slate-100 text-slate-900 min-h-screen flex">
+    <!-- PANEL BOCZNY (SIDEBAR) -->
+    <aside class="w-56 bg-slate-900 text-slate-100 flex flex-col">
+      <div class="px-4 py-4 border-b border-slate-800">
+        <div class="font-bold text-sm">Panel administratora</div>
+        <div class="text-[11px] text-slate-400">
+          LKS Wilamowiczanka Wilamowice
+        </div>
+      </div>
+
+      <nav class="flex-1 px-2 py-4 text-sm space-y-1">
+        <a href="admin.html" class="block px-3 py-2 rounded hover:bg-slate-800">
+          📊 Podsumowanie
+        </a>
+        <a href="admin-matches.html" class="block px-3 py-2 rounded hover:bg-slate-800">
+          ⚽ Mecze i wyniki
+        </a>
+        <a href="admin-players.html" class="block px-3 py-2 rounded bg-slate-800">
+          🧍‍♂️ Zawodnicy
+        </a>
+        <a href="admin-duties.html" class="block px-3 py-2 rounded hover:bg-slate-800">
+          🧹 Dyżurni
+        </a>
+      </nav>
+
+      <div class="px-4 py-3 border-t border-slate-800 text-xs">
+        <a href="/index.html" class="text-slate-300 hover:text-white">
+  ← Powrót na stronę główną
+</a>
+      </div>
+
+    </aside>
+
+    <!-- GŁÓWNA CZĘŚĆ PANELU -->
+    <main class="flex-1 flex flex-col">
+      <!-- Górny pasek -->
+      <header class="bg-white shadow">
+        <div
+          class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between"
+        >
+          <div>
+            <div class="text-sm font-semibold">Zawodnicy</div>
+            <div class="text-[11px] text-slate-500">
+              Zarządzanie listą zawodników i ich statystykami.
+            </div>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-500">
+            <span>
+              Zalogowany jako: <span class="font-semibold">admin</span>
+            </span>
+
+            <button
+              id="logoutBtn"
+              class="px-3 py-1 bg-red-600 text-white rounded-full hover:bg-red-700"
+            >
+              Wyloguj
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Zawartość -->
+      <section class="max-w-6xl mx-auto px-4 py-6 space-y-6 flex-1">
+        <!-- FORMULARZ: DODAJ / EDYTUJ ZAWODNIKA -->
+        <div class="bg-white rounded-xl shadow-sm p-4 text-xs md:text-sm">
+          <h2 class="text-sm font-semibold mb-3">Dodaj / edytuj zawodnika</h2>
+
+          <!-- ukryte pole – jeśli ustawione, edytujemy istniejącego -->
+          <input type="hidden" id="playerId" />
+
+          <div class="grid md:grid-cols-4 gap-3 mb-3">
+            <div>
+              <label for="playerFirstName" class="block text-[11px] mb-1">
+                Imię
+              </label>
+              <input
+                id="playerFirstName"
+                type="text"
+                class="w-full border border-slate-300 rounded-lg px-2 py-1 text-xs"
+                required
+              />
+            </div>
+            <div>
+              <label for="playerLastName" class="block text-[11px] mb-1">
+                Nazwisko
+              </label>
+              <input
+                id="playerLastName"
+                type="text"
+                class="w-full border border-slate-300 rounded-lg px-2 py-1 text-xs"
+                required
+              />
+            </div>
+            <div>
+              <label for="playerPosition" class="block text-[11px] mb-1">
+                Pozycja
+              </label>
+              <input
+                id="playerPosition"
+                type="text"
+                placeholder="np. Pomocnik"
+                class="w-full border border-slate-300 rounded-lg px-2 py-1 text-xs"
+              />
+            </div>
+            <div>
+              <label for="playerPreferredFoot" class="block text-[11px] mb-1">
+                Lepsza noga
+              </label>
+              <select
+                id="playerPreferredFoot"
+                class="w-full border border-slate-300 rounded-lg px-2 py-1 text-xs"
+              >
+                <option value="">Brak danych</option>
+                <option value="prawa">Prawa</option>
+                <option value="lewa">Lewa</option>
+                <option value="obie">Obie</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-4 gap-3 mb-3">
+            <div>
+              <label for="playerShirtNumber" class="block text-[11px] mb-1">
+                Numer na koszulce
+              </label>
+              <input
+                id="playerShirtNumber"
+                type="number"
+                min="1"
+                max="99"
+                class="w-full border border-slate-300 rounded-lg px-2 py-1 text-xs"
+              />
+            </div>
+            <div>
+              <label for="playerBirthDate" class="block text-[11px] mb-1">
+                Data urodzenia
+              </label>
+              <input
+                id="playerBirthDate"
+                type="date"
+                class="w-full border border-slate-300 rounded-lg px-2 py-1 text-xs"
+              />
+            </div>
+            <div>
+              <label for="playerGoals" class="block text-[11px] mb-1">
+                Bramki (sezon)
+              </label>
+              <input
+                id="playerGoals"
+                type="number"
+                min="0"
+                class="w-full border border-slate-300 rounded-lg px-2 py-1 text-xs"
+              />
+            </div>
+            <div>
+              <label for="playerAssists" class="block text-[11px] mb-1">
+                Asysty (sezon)
+              </label>
+              <input
+                id="playerAssists"
+                type="number"
+                min="0"
+                class="w-full border border-slate-300 rounded-lg px-2 py-1 text-xs"
+              />
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-4 gap-3 items-end mb-2">
+            <div>
+              <label for="playerYellowCards" class="block text-[11px] mb-1">
+                Żółte kartki
+              </label>
+              <input
+                id="playerYellowCards"
+                type="number"
+                min="0"
+                class="w-full border border-slate-300 rounded-lg px-2 py-1 text-xs"
+              />
+            </div>
+            <div>
+              <label for="playerRedCards" class="block text-[11px] mb-1">
+                Czerwone kartki
+              </label>
+              <input
+                id="playerRedCards"
+                type="number"
+                min="0"
+                class="w-full border border-slate-300 rounded-lg px-2 py-1 text-xs"
+              />
+            </div>
+
+            <div class="md:col-span-2 flex gap-2 justify-end">
+              <button
+                id="resetPlayerFormBtn"
+                type="button"
+                class="px-3 py-1 border border-slate-300 rounded-lg text-xs hover:bg-slate-100"
+              >
+                Wyczyść formularz
+              </button>
+              <button
+                id="savePlayerBtn"
+                type="button"
+                class="px-4 py-1 bg-green-700 text-white rounded-lg text-xs font-semibold hover:bg-green-800"
+              >
+                Zapisz zawodnika
+              </button>
+            </div>
+          </div>
+
+          <p
+            id="playerFormMessage"
+            class="mt-2 text-[11px] text-slate-500"
+          ></p>
+        </div>
+
+        <!-- LISTA ZAWODNIKÓW (Z EDYTUJ / USUŃ) -->
+        <div class="bg-white rounded-xl shadow-sm p-4 text-xs md:text-sm">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-semibold">Lista zawodników</h2>
+            <p id="playersTableMessage" class="text-[11px] text-slate-500"></p>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs md:text-sm">
+              <thead class="text-left text-slate-500 border-b">
+                <tr>
+                  <th class="py-2 pr-2">Imię i nazwisko</th>
+                  <th class="py-2 pr-2">Pozycja</th>
+                  <th class="py-2 pr-2 text-center">Nr</th>
+                  <th class="py-2 pr-2 text-center">Bramki</th>
+                  <th class="py-2 pr-2 text-center">Asysty</th>
+                  <th class="py-2 pr-2 text-center">Żółte</th>
+                  <th class="py-2 pr-2 text-center">Czerwone</th>
+                  <th class="py-2 pr-2 text-right">Akcje</th>
+                </tr>
+              </thead>
+              <tbody id="adminPlayersBody">
+                <!-- JS wstawi wiersze z przyciskiem Edytuj / Usuń
+                     oraz później +1 przy statystykach -->
+              </tbody>
+            </table>
+            
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+  (function () {
+    const logged = localStorage.getItem("adminLoggedIn") === "1";
+    if (!logged) window.location.href = "login.html";
+  })();
+</script>
+    <script>
+    document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+
+      try {
+        await fetch("/api/auth/logout", {
+          method: "POST"
+        });
+      } catch (e) {}
+
+      localStorage.removeItem("adminLoggedIn");
+
+      window.location.href = "login.html";
+
+    });
+    </script>
+    <!-- Logika zarządzania zawodnikami -->
+    <script src="js/admin-players.js"></script>
+  </body>
+</html>
+
+

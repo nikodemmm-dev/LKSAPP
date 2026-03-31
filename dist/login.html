@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Logowanie – LKS Wilamowiczanka</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-slate-100 text-slate-900 min-h-screen flex flex-col">
+    <!-- NAVBAR (prosty, jak na innych stronach) -->
+    <header class="bg-white shadow">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-3">
+          <img
+            src="images/logos/wilamowiczanka.png"
+            alt="Logo LKS Wilamowiczanka"
+            class="w-10 h-10 object-contain"
+          />
+          <div>
+            <div class="font-bold text-sm md:text-base">
+              LKS Wilamowiczanka Wilamowice
+            </div>
+            <div class="text-xs text-slate-500">
+              Oficjalna strona klubu piłkarskiego
+            </div>
+          </div>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-4 text-xs md:text-sm font-medium">
+          <a href="index.html" class="hover:text-green-700">Strona główna</a>
+          <a href="team.html" class="hover:text-green-700">Drużyna</a>
+          <a href="schedule.html" class="hover:text-green-700">Terminarz</a>
+          <a href="stats.html" class="hover:text-green-700">Statystyki</a>
+          <a href="sponsors.html" class="hover:text-green-700">Sponsorzy</a>
+          <a href="contact.html" class="hover:text-green-700">Kontakt</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- GŁÓWNA CZĘŚĆ – FORMULARZ LOGOWANIA -->
+    <main class="flex-1 flex items-center justify-center px-4">
+      <div class="w-full max-w-md bg-white rounded-xl shadow-sm p-6">
+        <h1 class="text-xl font-bold mb-4 text-center">Logowanie</h1>
+        <p class="text-xs text-slate-500 mb-4 text-center">
+          Panel przeznaczony dla administratora / zarządu klubu.
+        </p>
+
+        <form id="loginForm" class="space-y-4">
+          <!-- Login / e-mail -->
+          <div>
+            <label class="block text-xs font-semibold mb-1" for="login">
+              Login / e-mail
+            </label>
+            <input
+              id="login"
+              type="text"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+              placeholder="np. admin@lks.pl"
+              required
+            />
+          </div>
+
+          <!-- Hasło -->
+          <div>
+            <label class="block text-xs font-semibold mb-1" for="password">
+              Hasło
+            </label>
+            <input
+              id="password"
+              type="password"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <!-- Przycisk zaloguj -->
+          <button
+            type="submit"
+            class="w-full bg-green-700 text-white py-2 rounded-lg text-sm font-semibold hover:bg-green-800"
+          >
+            Zaloguj
+          </button>
+
+        </form>
+      </div>
+    </main>
+
+    <!-- STOPKA -->
+    <footer class="bg-slate-900 text-slate-300 text-xs mt-6">
+      <div
+        class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2"
+      >
+        <div>© LKS Wilamowiczanka Wilamowice</div>
+        <div>Projekt pracy dyplomowej – Nikodem Marcinkiewicz</div>
+      </div>
+    </footer>
+
+    
+    <script>
+  // Lista dopuszczonych kont
+  const ADMINS = [
+    { login: "wilamowiczanka", password: "123" },
+    { login: "trener", password: "trener" }
+  ];
+
+  const LOGIN_TTL = 60 * 1000; // 60 sekund
+
+  function ensureMessageBox() {
+    let box = document.getElementById("loginMessage");
+    if (!box) {
+      box = document.createElement("div");
+      box.id = "loginMessage";
+      box.className = "mt-2 text-sm";
+      const form = document.getElementById("loginForm") || document.querySelector("form");
+      if (form) form.appendChild(box);
+      else document.body.appendChild(box);
+    }
+    return box;
+  }
+
+  function showMsg(text, ok) {
+    const box = ensureMessageBox();
+    box.textContent = text;
+    box.className = "mt-2 text-sm " + (ok ? "text-green-700" : "text-red-700");
+  }
+
+  function getLoginValue() {
+    const el =
+      document.getElementById("login") ||
+      document.getElementById("username") ||
+      document.querySelector('input[type="text"]');
+    return (el?.value || "").trim();
+  }
+
+  function getPasswordValue() {
+    const el =
+      document.getElementById("password") ||
+      document.querySelector('input[type="password"]');
+    return (el?.value || "").trim();
+  }
+
+  function isSessionValid() {
+    const logged = localStorage.getItem("adminLoggedIn") === "1";
+    const loginTime = Number(localStorage.getItem("adminLoginTime") || "0");
+    return logged && loginTime && (Date.now() - loginTime < LOGIN_TTL);
+  }
+
+  function doLogin() {
+    const login = getLoginValue();
+    const password = getPasswordValue();
+
+    const isValid = ADMINS.some(
+      (u) => u.login === login && u.password === password
+    );
+
+    if (isValid) {
+      localStorage.setItem("adminLoggedIn", "1");
+      localStorage.setItem("adminLoginTime", Date.now().toString());
+      localStorage.setItem("adminLoginToast", "1");
+      localStorage.setItem("adminUser", login); // kto się zalogował
+
+      showMsg("Poprawne logowanie. Przenoszę do panelu...", true);
+      setTimeout(() => (window.location.href = "admin.html"), 200);
+      return;
+    }
+
+    // błędne logowanie
+    localStorage.removeItem("adminLoggedIn");
+    localStorage.removeItem("adminLoginTime");
+    localStorage.removeItem("adminLoginToast");
+    localStorage.removeItem("adminUser");
+
+    showMsg("Niepoprawne logowanie.", false);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Jeśli sesja jeszcze ważna → od razu do panelu
+    if (isSessionValid()) {
+      window.location.href = "admin.html";
+      return;
+    }
+
+    const form = document.getElementById("loginForm") || document.querySelector("form");
+    if (form) {
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        doLogin();
+      });
+    }
+
+    const btn =
+      document.getElementById("loginBtn") ||
+      document.querySelector('button[type="submit"]') ||
+      document.querySelector("button");
+
+    if (btn) {
+      btn.addEventListener("click", () => {
+        if (!(form && btn.type === "submit")) doLogin();
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>
+

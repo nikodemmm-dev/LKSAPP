@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tabela ligowa – LKS Wilamowiczanka Wilamowice</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-slate-100 text-slate-900">
+    <!-- NAVBAR -->
+    <!-- NAVBAR -->
+<header class="bg-white shadow">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <!-- Logo + nazwa klubu -->
+    <a href="index.html" class="flex items-center gap-3">
+      <img
+        src="images/logos/wilamowiczanka.png"
+        alt="Logo LKS Wilamowiczanka"
+        class="w-10 h-10 object-contain"
+      />
+      <div>
+        <div class="font-bold text-sm md:text-base">
+          LKS Wilamowiczanka Wilamowice
+        </div>
+        <div class="text-xs text-slate-500">
+          Oficjalna strona klubu piłkarskiego
+        </div>
+      </div>
+    </a>
+
+    <!-- MENU DESKTOP -->
+    <nav
+      class="hidden md:flex items-center gap-3 text-[11px] md:text-xs lg:text-sm font-medium"
+    >
+      <a href="index.html" class="hover:text-green-700">Strona główna</a>
+      <a href="team.html" class="hover:text-green-700">Drużyna</a>
+      <a href="schedule.html" class="hover:text-green-700">Terminarz</a>
+      <a href="stats.html" class="hover:text-green-700">Statystyki</a>
+      <a href="table.html" class="hover:text-green-700">Tabela</a>
+      <a href="sponsors.html" class="hover:text-green-700">Sponsorzy</a>
+      <a href="index.html#contact" class="hover:text-green-700">Kontakt</a>
+
+      <!-- FB (desktop) -->
+      <a
+        href="https://www.facebook.com/profile.php?id=100095156621506&locale=pl_PL"
+        target="_blank"
+        class="text-blue-600 hover:text-blue-800"
+      >
+        <div
+          class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="white"
+            viewBox="0 0 24 24"
+            class="w-3.5 h-3.5"
+          >
+            <path
+              d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 
+              1.326 24h11.494v-9.294H9.691V11.01h3.129V8.414c0-3.1 1.893-4.788 
+              4.659-4.788 1.325 0 2.463.099 2.796.143v3.24l-1.918.001c-1.504 
+              0-1.795.715-1.795 1.763v2.307h3.587l-.467 3.696h-3.12V24h6.116C23.403 
+              24 24 23.403 24 22.674V1.326C24 .597 23.403 0 22.675 0z"
+            />
+          </svg>
+        </div>
+      </a>
+
+      <!-- Logowanie (desktop) -->
+      <a
+        href="login.html"
+        class="ml-2 px-3 py-1 rounded-full border border-slate-300 text-[11px] md:text-xs hover:bg-slate-100"
+      >
+        Logowanie
+      </a>
+    </nav>
+
+    <!-- HAMBURGER (tylko mobile) -->
+    <button
+      id="navToggle"
+      class="md:hidden text-2xl"
+      aria-label="Otwórz menu"
+      type="button"
+    >
+      ☰
+    </button>
+  </div>
+
+  <!-- MENU MOBILNE (hamburger) -->
+  <div id="mobileNav" class="md:hidden border-t border-slate-200 hidden">
+    <div class="max-w-6xl mx-auto px-4 py-2 flex flex-col gap-2 text-sm">
+      <a href="index.html" class="hover:text-green-700">Strona główna</a>
+      <a href="team.html" class="hover:text-green-700">Drużyna</a>
+      <a href="schedule.html" class="hover:text-green-700">Terminarz</a>
+      <a href="stats.html" class="hover:text-green-700">Statystyki</a>
+      <a href="table.html" class="hover:text-green-700">Tabela</a>
+      <a href="sponsors.html" class="hover:text-green-700">Sponsorzy</a>
+      <a href="index.html#contact" class="hover:text-green-700">Kontakt</a>
+
+      <!-- FB w hamburgerze -->
+      <a
+        href="https://www.facebook.com/profile.php?id=100095156621506&locale=pl_PL"
+        target="_blank"
+        class="mt-1 inline-flex items-center gap-2 text-blue-700 hover:text-blue-900"
+      >
+        <span>Facebook</span>
+      </a>
+
+      <!-- Logowanie w hamburgerze -->
+      <a
+        href="login.html"
+        class="mt-1 px-3 py-1 rounded-full border border-slate-300 text-xs hover:bg-slate-100 inline-block w-max"
+      >
+        Logowanie
+      </a>
+    </div>
+  </div>
+</header>
+
+    <main class="flex-1">
+      <!-- HERO -->
+      <section class="bg-green-700 text-white py-8 md:py-10">
+        <div class="max-w-6xl mx-auto px-4">
+          <h1 class="text-2xl md:text-3xl font-extrabold">Tabela ligowa</h1>
+          <p class="text-emerald-100 mt-2 text-sm md:text-base max-w-2xl">
+            Aktualna klasyfikacja drużyn w lidze. Dane generowane na podstawie
+            wyników meczów zapisanych w systemie.
+          </p>
+        </div>
+      </section>
+
+      <!-- TABELA LIGOWA -->
+      <section class="max-w-6xl mx-auto px-4 py-6">
+        <div class="bg-white rounded-xl shadow-sm p-4 md:p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-semibold">Pełna tabela ligowa</h2>
+            <p
+              id="leagueTableMessage"
+              class="text-[11px] md:text-xs text-slate-500"
+            ></p>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs md:text-sm">
+              <thead class="text-left text-slate-500 border-b">
+                <tr>
+                  <th class="py-2 pr-2">Miejsce</th>
+                  <th class="py-2 pr-2 text-center">Logo</th>
+                  <th class="py-2 pr-2">Drużyna</th>
+                  <th class="py-2 pr-2 text-center">M</th>
+                  <th class="py-2 pr-2 text-center">Z</th>
+                  <th class="py-2 pr-2 text-center">R</th>
+                  <th class="py-2 pr-2 text-center">P</th>
+                  <th class="py-2 pr-2 text-center">Bramki</th>
+                  <th class="py-2 pr-2 text-center">+/-</th>
+                  <th class="py-2 pr-2 text-center">Pkt</th>
+                </tr>
+              </thead>
+              <tbody id="leagueTableBody">
+                <!-- Wiersze tabeli wstawi JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <p class="mt-3 text-[10px] text-slate-400">
+            *Tabela liczona automatycznie: 3 punkty za zwycięstwo, 1 punkt za
+            remis, 0 za porażkę. Przy równej liczbie punktów kolejność wg
+            liczby bramek zdobytych.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 text-xs mt-6">
+      <div
+        class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2"
+      >
+        <div>© LKS Wilamowiczanka Wilamowice</div>
+        <div>Projekt pracy dyplomowej – Nikodem Marcinkiewicz</div>
+      </div>
+    </footer>
+
+    <script>
+      // prosty toggle mobile nav
+      document.getElementById('navToggle')?.addEventListener('click', () => {
+        const box = document.getElementById('mobileNav');
+        if (!box) return;
+        box.classList.toggle('hidden');
+      });
+
+      // mapa nazw drużyn 
+      const teamLogos = {
+        "LKS Wilamowiczanka": "wilamowiczanka",
+        "Iskra Rybarzowice": "iskra-rybarzowice",
+        "Pionier Pisarzowice": "pionier-pisarzowice",
+        "Żar Międzybrodzie Bialskie": "zar-miedzybrodzie",
+        "LKS Ligota": "lks-ligota",
+        "LKS II Czaniec": "lks-czaniec",
+        "Sokół Zabrzeg": "sokol-zabrzeg",
+        "Zapora Wapienica": "zapora-wapienica",
+        "Sokół Hecznarowice": "sokol-hecznarowice",
+        "KS Bystra": "ks-bystra",
+        "Orzeł Kozy": "orzel-kozy",
+        "Groń Bujaków": "gron-bujakow",
+        "Soła Kobiernice": "sola-kobiernice",
+        "Zamek Grodziec": "zamek-grodziec"
+      };
+
+
+      async function loadLeagueTable() {
+        const tbody = document.getElementById('leagueTableBody');
+        const msgEl = document.getElementById('leagueTableMessage');
+
+        if (!tbody || !msgEl) return;
+
+        msgEl.textContent = 'Ładuję tabelę...';
+
+        try {
+          const res = await fetch('/api/stats/league-table');
+          if (!res.ok) {
+            throw new Error('HTTP ' + res.status);
+          }
+
+          const data = await res.json();
+          console.log('Odpowiedź z /api/stats/league-table:', data);
+
+          let rows = [];
+          if (Array.isArray(data)) {
+            rows = data;
+          } else if (Array.isArray(data.table)) {
+            rows = data.table;
+          }
+
+          if (!rows.length) {
+            msgEl.textContent = 'Brak danych tabeli w bazie.';
+            tbody.innerHTML = '';
+            return;
+          }
+
+          rows.sort((a, b) => {
+            if (a.position != null && b.position != null) {
+              return a.position - b.position;
+            }
+            const pa = a.points ?? 0;
+            const pb = b.points ?? 0;
+            if (pb !== pa) return pb - pa;
+            const gfa = a.goalsFor ?? 0;
+            const gfb = b.goalsFor ?? 0;
+            return gfb - gfa;
+          });
+
+          rows = rows.map((team, idx) => ({
+            position:
+              team.position != null && team.position !== ''
+                ? team.position
+                : idx + 1,
+            ...team,
+          }));
+
+          const CLUB_NAME = 'LKS Wilamowiczanka Wilamowice';
+
+          const rowsHtml = rows
+            .map((t) => {
+              const pos = t.position;
+              const name =
+                t.teamName || t.team || t.clubName || 'Nieznana drużyna';
+              const played = t.played ?? t.matches ?? 0;
+              const wins = t.wins ?? t.won ?? 0;
+              const draws = t.draws ?? t.draw ?? 0;
+              const losses = t.losses ?? t.lost ?? 0;
+              const gf = t.goalsFor ?? t.gf ?? 0;
+              const ga = t.goalsAgainst ?? t.ga ?? 0;
+              const gd =
+                t.goalDiff != null
+                  ? t.goalDiff
+                  : gf - ga;
+              const points = t.points ?? t.pts ?? 0;
+
+              const logoBase = teamLogos[name]; // np. "iskra-rybarzowice"
+                let logoHtml = '';
+
+                if (logoBase) {
+                  const pngPath = `images/logos/${logoBase}.png`;
+                  const jpgPath = `images/logos/${logoBase}.jpg`;
+
+                  logoHtml = `
+                    <img
+                      src="${pngPath}"
+                      class="w-7 h-7 md:w-8 md:h-8 object-contain mx-auto"
+                      alt="Logo ${name}"
+                      onerror="this.onerror=null; this.src='${jpgPath}'"
+                    >
+                  `;
+                }
+
+              const isOurClub = name === CLUB_NAME;
+
+              let rowClass = 'text-slate-900';
+
+              if (pos === 1) {
+                rowClass += ' bg-lime-300';
+              } else if (pos >= 2 && pos <= 5) {
+                rowClass += ' bg-green-100';
+              } else if (pos >= 13) {
+                rowClass += ' bg-red-300';
+              }
+              
+              return `
+                <tr class="border-b last:border-0 ${rowClass}">
+                  <td class="py-2 pr-2">${pos}</td>
+                  <td class="py-2 pr-2 text-center">
+                    ${logoHtml}
+                  </td>
+                  <td class="py-2 pr-2">${name}</td>
+                  <td class="py-2 pr-2 text-center">${played}</td>
+                  <td class="py-2 pr-2 text-center">${wins}</td>
+                  <td class="py-2 pr-2 text-center">${draws}</td>
+                  <td class="py-2 pr-2 text-center">${losses}</td>
+                  <td class="py-2 pr-2 text-center">${gf} : ${ga}</td>
+                  <td class="py-2 pr-2 text-center">
+                    ${gd > 0 ? '+' + gd : gd}
+                  </td>
+                  <td class="py-2 pr-2 text-center">${points}</td>
+                </tr>
+              `;
+            })
+            .join('');
+
+          tbody.innerHTML = rowsHtml;
+          msgEl.textContent = '';
+        } catch (err) {
+          console.error('Błąd przy pobieraniu tabeli:', err);
+          msgEl.textContent =
+            'Błąd przy pobieraniu tabeli: ' + err.message;
+          tbody.innerHTML = '';
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', loadLeagueTable);
+    </script>
+  </body>
+</html>
+
+
+
