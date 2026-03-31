@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Panel administratora – LKS Wilamowiczanka</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-slate-100 text-slate-900 min-h-screen flex">
+    <!-- PANEL BOCZNY (SIDEBAR) -->
+    <aside class="w-56 bg-slate-900 text-slate-100 flex flex-col">
+      <div class="px-4 py-4 border-b border-slate-800">
+        <div class="font-bold text-sm">Panel administratora</div>
+        <div class="text-[11px] text-slate-400">
+          LKS Wilamowiczanka Wilamowice
+        </div>
+      </div>
+
+      <nav class="flex-1 px-2 py-4 text-sm space-y-1">
+        <a href="admin.html" class="block px-3 py-2 rounded bg-slate-800">
+          📊 Podsumowanie
+        </a>
+        <a href="admin-matches.html" class="block px-3 py-2 rounded hover:bg-slate-800">
+          ⚽ Mecze i wyniki
+        </a>
+        <a href="admin-players.html" class="block px-3 py-2 rounded hover:bg-slate-800">
+          🧍‍♂️ Zawodnicy
+        </a>
+        <a href="admin-duties.html" class="block px-3 py-2 rounded hover:bg-slate-800">
+          🧹 Dyżurni
+        </a>
+      </nav>
+
+      <div class="px-4 py-3 border-t border-slate-800 text-xs">
+        <a href="/index.html" class="text-slate-300 hover:text-white">
+  ← Powrót na stronę główną
+</a>
+      </div>
+    </aside>
+
+    <!-- GŁÓWNA CZĘŚĆ PANELU -->
+    <main class="flex-1 flex flex-col">
+      <!-- Górny pasek -->
+      <header class="bg-white shadow">
+        <div
+          class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between"
+        >
+          <div>
+            <div class="text-sm font-semibold">Podsumowanie</div>
+            <div class="text-[11px] text-slate-500">
+              Szybki podgląd najważniejszych informacji o drużynie.
+            </div>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-500">
+            <span>
+              Zalogowany jako: <span class="font-semibold">admin</span>
+            </span>
+
+            <button
+              id="logoutBtn"
+              class="px-3 py-1 bg-red-600 text-white rounded-full hover:bg-red-700"
+            >
+              Wyloguj
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div id="adminLoginBanner" class="hidden">
+  <div class="max-w-6xl mx-auto px-4 pt-4">
+    <div class="bg-green-50 border border-green-200 text-green-800 rounded-lg px-3 py-2 text-xs md:text-sm">
+      ✅ Poprawne logowanie.
+    </div>
+  </div>
+</div>
+
+      <!-- Zawartość -->
+      <section
+        class="max-w-6xl mx-auto px-4 py-6 space-y-6 flex-1"
+      >
+        <!-- Kafle podsumowania -->
+        <div class="grid gap-4 md:grid-cols-4">
+          <div class="bg-white rounded-xl shadow-sm p-4 text-xs">
+            <div class="text-slate-500 mb-1">Mecze w sezonie</div>
+            <div id="adminTotalMatches" class="text-2xl font-bold">–</div>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm p-4 text-xs">
+            <div class="text-slate-500 mb-1">Zawodnicy w kadrze</div>
+            <div id="adminTotalPlayers" class="text-2xl font-bold">–</div>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm p-4 text-xs">
+            <div class="text-slate-500 mb-1">Aktualni dyżurni</div>
+            <div id="adminCurrentDuties" class="text-2xl font-bold">–</div>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm p-4 text-xs">
+            <div class="text-slate-500 mb-1">Sponsorzy</div>
+            <div id="adminTotalSponsors" class="text-2xl font-bold">23</div>
+          </div>
+        </div>
+
+        <!-- Ostatnio edytowane mecze -->
+        <div class="bg-white rounded-xl shadow-sm p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-semibold">Ostatnio aktualizowane mecze</h2>
+            <button
+              class="text-xs text-green-700 hover:underline"
+              type="button"
+            >
+              Przejdź do zarządzania meczami
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs md:text-sm">
+              <thead class="text-left text-slate-500 border-b">
+                <tr>
+                  <th class="py-2 pr-2">Data</th>
+                  <th class="py-2 pr-2">Przeciwnik</th>
+                  <th class="py-2 pr-2">Dom/Wyj.</th>
+                  <th class="py-2 pr-2">Wynik</th>
+                  <th class="py-2 pr-2">Ostatnia zmiana</th>
+                </tr>
+              </thead>
+              <tbody id="adminLastMatchesBody">
+                <!-- tutaj JS wstawi ostatnie mecze -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+<script>
+  (function () {
+    const logged = localStorage.getItem("adminLoggedIn") === "1";
+    if (!logged) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    const showToast = localStorage.getItem("adminLoginToast") === "1";
+    if (showToast) {
+      // jakby banner nie istniał, to go tworzymy
+      let banner = document.getElementById("adminLoginBanner");
+      if (!banner) {
+        banner = document.createElement("div");
+        banner.id = "adminLoginBanner";
+        banner.innerHTML = `
+          <div class="max-w-6xl mx-auto px-4 pt-4">
+            <div class="bg-green-50 border border-green-200 text-green-800 rounded-lg px-3 py-2 text-xs md:text-sm">
+              ✅ Poprawne logowanie.
+            </div>
+          </div>
+        `;
+        document.body.insertBefore(banner, document.body.firstChild);
+      } else {
+        banner.classList.remove("hidden");
+      }
+
+      localStorage.removeItem("adminLoginToast");
+      setTimeout(() => banner.classList.add("hidden"), 2500);
+    }
+  })();
+  </script>
+  <script>
+    document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST"
+      });
+    } catch (e) {}
+
+    localStorage.removeItem("adminLoggedIn");
+
+    window.location.href = "login.html";
+
+  });
+  </script>
+  <script src="js/admin-dashboard.js">  
+  </script>
+  </body>
+</html>

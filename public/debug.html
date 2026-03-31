@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Debug – Test API Zawodników</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body style="font-family: Arial, sans-serif; background: #f1f5f9; color: #0f172a;">
+    <h1>Test API – Lista Zawodników</h1>
+    <p>Sprawdzamy /api/players</p>
+
+    <h2>Wynik (lista imię + nazwisko + pozycja):</h2>
+    <pre id="playersList" style="background:#fff; padding:10px; border-radius:4px; border:1px solid #cbd5e1;"></pre>
+
+    <h2>Surowa odpowiedź JSON (dla debugowania):</h2>
+    <pre id="rawJson" style="background:#fff; padding:10px; border-radius:4px; border:1px solid #cbd5e1;"></pre>
+
+    <script>
+      async function loadPlayers() {
+        const listEl = document.getElementById('playersList');
+        const rawEl = document.getElementById('rawJson');
+
+        try {
+          const res = await fetch('/api/players');
+          if (!res.ok) {
+            throw new Error('HTTP ' + res.status);
+          }
+
+          const data = await res.json();
+          console.log('Odpowiedź z /api/players:', data);
+
+          // pokaż surowy JSON
+          rawEl.textContent = JSON.stringify(data, null, 2);
+
+          // obsługa obu przypadków:
+          // 1) data = [ {...}, {...} ]
+          // 2) data = { players: [ {...}, {...} ] }
+          let players = [];
+
+          if (Array.isArray(data)) {
+            players = data;
+          } else if (Array.isArray(data.players)) {
+            players = data.players;
+          } else {
+            listEl.textContent = 'Nie znaleziono tablicy zawodników (data ani data.players nie jest tablicą).';
+            return;
+          }
+
+          if (players.length === 0) {
+            listEl.textContent = 'Brak zawodników w bazie.';
+            return;
+          }
+
+          // zbuduj ładną listę tekstową
+          const lines = players.map(p => {
+            const firstName = p.firstName || p.imie || '';
+            const lastName = p.lastName || p.nazwisko || '';
+            const position = p.position || p.pozycja || '';
+            return `${firstName} ${lastName} – ${position}`;
+          });
+
+          listEl.textContent = lines.join('\n');
+
+        } catch (err) {
+          console.error('Błąd przy pobieraniu /api/players:', err);
+          listEl.textContent = 'Błąd przy pobieraniu danych: ' + err.message;
+        }
+      }
+
+      loadPlayers();
+    </script>
+  </body>
+</html>
+

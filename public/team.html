@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Drużyna – LKS Wilamowiczanka</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-slate-100 text-slate-900">
+<!-- NAVBAR -->
+    <!-- NAVBAR -->
+<header class="bg-white shadow">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <!-- Logo + nazwa klubu -->
+    <a href="index.html" class="flex items-center gap-3">
+      <img
+        src="images/logos/wilamowiczanka.png"
+        alt="Logo LKS Wilamowiczanka"
+        class="w-10 h-10 object-contain"
+      />
+      <div>
+        <div class="font-bold text-sm md:text-base">
+          LKS Wilamowiczanka Wilamowice
+        </div>
+        <div class="text-xs text-slate-500">
+          Oficjalna strona klubu piłkarskiego
+        </div>
+      </div>
+    </a>
+
+    <!-- MENU DESKTOP -->
+    <nav
+      class="hidden md:flex items-center gap-3 text-[11px] md:text-xs lg:text-sm font-medium"
+    >
+      <a href="index.html" class="hover:text-green-700">Strona główna</a>
+      <a href="team.html" class="hover:text-green-700">Drużyna</a>
+      <a href="schedule.html" class="hover:text-green-700">Terminarz</a>
+      <a href="stats.html" class="hover:text-green-700">Statystyki</a>
+      <a href="table.html" class="hover:text-green-700">Tabela</a>
+      <a href="sponsors.html" class="hover:text-green-700">Sponsorzy</a>
+      <a href="index.html#contact" class="hover:text-green-700">Kontakt</a>
+
+      <!-- FB (desktop) -->
+      <a
+        href="https://www.facebook.com/profile.php?id=100095156621506&locale=pl_PL"
+        target="_blank"
+        class="text-blue-600 hover:text-blue-800"
+      >
+        <div
+          class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="white"
+            viewBox="0 0 24 24"
+            class="w-3.5 h-3.5"
+          >
+            <path
+              d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 
+              1.326 24h11.494v-9.294H9.691V11.01h3.129V8.414c0-3.1 1.893-4.788 
+              4.659-4.788 1.325 0 2.463.099 2.796.143v3.24l-1.918.001c-1.504 
+              0-1.795.715-1.795 1.763v2.307h3.587l-.467 3.696h-3.12V24h6.116C23.403 
+              24 24 23.403 24 22.674V1.326C24 .597 23.403 0 22.675 0z"
+            />
+          </svg>
+        </div>
+      </a>
+
+      <!-- Logowanie (desktop) -->
+      <a
+        href="login.html"
+        class="ml-2 px-3 py-1 rounded-full border border-slate-300 text-[11px] md:text-xs hover:bg-slate-100"
+      >
+        Logowanie
+      </a>
+    </nav>
+
+    <!-- HAMBURGER (tylko mobile) -->
+    <button
+      id="navToggle"
+      class="md:hidden text-2xl"
+      aria-label="Otwórz menu"
+      type="button"
+    >
+      ☰
+    </button>
+  </div>
+
+  <!-- MENU MOBILNE (hamburger) -->
+  <div id="mobileNav" class="md:hidden border-t border-slate-200 hidden">
+    <div class="max-w-6xl mx-auto px-4 py-2 flex flex-col gap-2 text-sm">
+      <a href="index.html" class="hover:text-green-700">Strona główna</a>
+      <a href="team.html" class="hover:text-green-700">Drużyna</a>
+      <a href="schedule.html" class="hover:text-green-700">Terminarz</a>
+      <a href="stats.html" class="hover:text-green-700">Statystyki</a>
+      <a href="table.html" class="hover:text-green-700">Tabela</a>
+      <a href="sponsors.html" class="hover:text-green-700">Sponsorzy</a>
+      <a href="index.html#contact" class="hover:text-green-700">Kontakt</a>
+
+      <!-- FB w hamburgerze -->
+      <a
+        href="https://www.facebook.com/profile.php?id=100095156621506&locale=pl_PL"
+        target="_blank"
+        class="mt-1 inline-flex items-center gap-2 text-blue-700 hover:text-blue-900"
+      >
+        <span>Facebook</span>
+      </a>
+
+      <!-- Logowanie w hamburgerze -->
+      <a
+        href="login.html"
+        class="mt-1 px-3 py-1 rounded-full border border-slate-300 text-xs hover:bg-slate-100 inline-block w-max"
+      >
+        Logowanie
+      </a>
+    </div>
+  </div>
+</header>
+
+
+    <main>
+      <!-- HERO -->
+      <section class="bg-green-700 text-white py-10">
+        <div class="max-w-6xl mx-auto px-4">
+          <h1 class="text-3xl font-extrabold">Drużyna</h1>
+          <p class="text-emerald-100 mt-2">
+            Pełna lista zawodników, ich pozycje, numery i podstawowe informacje.
+          </p>
+        </div>
+      </section>
+
+      <!-- LISTA ZAWODNIKÓW -->
+      <section class="max-w-6xl mx-auto px-4 py-10">
+        <h2 class="text-lg font-semibold mb-4">Kadra 2025/2026</h2>
+
+        <!-- Tu JS wstawi karty zawodników -->
+        <div id="playersGrid" class="grid gap-6 md:grid-cols-3">
+          <!-- Karty zawodników będą generowane dynamicznie -->
+        </div>
+
+        <!-- Miejsce na komunikat (np. ładowanie / błąd) -->
+        <p id="playersMessage" class="text-xs text-slate-500 mt-3"></p>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 text-xs mt-6">
+      <div
+        class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2"
+      >
+        <div>© LKS Wilamowiczanka Wilamowice</div>
+        <div>Projekt pracy dyplomowej – Nikodem Marcinkiewicz</div>
+      </div>
+    </footer>
+
+    <script>
+      // prosty toggle mobile nav
+      document.getElementById('navToggle')?.addEventListener('click', () => {
+        const box = document.getElementById('mobileNav');
+        if (!box) return;
+        box.classList.toggle('hidden');
+      });
+      
+      async function loadPlayers() {
+        const gridEl = document.getElementById('playersGrid');
+        const msgEl = document.getElementById('playersMessage');
+
+        msgEl.textContent = 'Ładuję zawodników...';
+
+        try {
+          const res = await fetch('/api/players');
+          if (!res.ok) {
+            throw new Error('HTTP ' + res.status);
+          }
+
+          const data = await res.json();
+          console.log('Odpowiedź z /api/players:', data);
+
+          // zakładamy, że API zwraca tablicę obiektów
+          const players = Array.isArray(data) ? data : (data.players || []);
+
+          if (!players.length) {
+            msgEl.textContent = 'Brak zawodników w bazie.';
+            gridEl.innerHTML = '';
+            return;
+          }
+
+          msgEl.textContent = '';
+
+          const cardsHtml = players
+            .map((p) => {
+              const firstName = p.firstName || '';
+              const lastName = p.lastName || '';
+              const position = p.position || '';
+              const preferredFoot = p.preferredFoot || '';
+              const shirtNumber = p.shirtNumber || '';
+              const birthDate = p.birthDate
+                ? new Date(p.birthDate).toISOString().slice(0, 10)
+                : '';
+
+              return `
+                <div class="bg-white rounded-xl shadow p-4 flex flex-col gap-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-16 h-16 rounded-full overflow-hidden">
+                      <img 
+                        src="/images/player.png" 
+                        alt="Zawodnik"
+                        class="w-full h-full object-cover"
+                      >
+                    </div>
+                    <div>
+                      <div class="font-semibold text-sm">${firstName} ${lastName}</div>
+                      <div class="text-xs text-slate-500">
+                        ${position} ${shirtNumber ? '• Nr ' + shirtNumber : ''}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-xs text-slate-500">
+                    ${preferredFoot ? 'Lepsza noga: ' + preferredFoot + '<br />' : ''}
+                    ${birthDate ? 'Data urodzenia: ' + birthDate + '<br />' : ''}
+                    Pozycja: ${position || '-'}
+                  </div>
+                </div>
+              `;
+            })
+            .join('');
+
+          gridEl.innerHTML = cardsHtml;
+        } catch (err) {
+          console.error('Błąd przy pobieraniu /api/players:', err);
+          msgEl.textContent = 'Błąd przy pobieraniu zawodników: ' + err.message;
+          gridEl.innerHTML = '';
+        }
+      }
+
+      // uruchamiamy po wczytaniu strony
+      loadPlayers();
+    </script>
+  </body>
+</html>

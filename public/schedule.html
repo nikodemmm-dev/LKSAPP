@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Terminarz – LKS Wilamowiczanka</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-slate-100 text-slate-900">
+
+    <!-- NAVBAR -->
+<header class="bg-white shadow">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <!-- Logo + nazwa klubu -->
+    <a href="index.html" class="flex items-center gap-3">
+      <img
+        src="images/logos/wilamowiczanka.png"
+        alt="Logo LKS Wilamowiczanka"
+        class="w-10 h-10 object-contain"
+      />
+      <div>
+        <div class="font-bold text-sm md:text-base">
+          LKS Wilamowiczanka Wilamowice
+        </div>
+        <div class="text-xs text-slate-500">
+          Oficjalna strona klubu piłkarskiego
+        </div>
+      </div>
+    </a>
+
+    <!-- MENU DESKTOP -->
+    <nav
+      class="hidden md:flex items-center gap-3 text-[11px] md:text-xs lg:text-sm font-medium"
+    >
+      <a href="index.html" class="hover:text-green-700">Strona główna</a>
+      <a href="team.html" class="hover:text-green-700">Drużyna</a>
+      <a href="schedule.html" class="hover:text-green-700">Terminarz</a>
+      <a href="stats.html" class="hover:text-green-700">Statystyki</a>
+      <a href="table.html" class="hover:text-green-700">Tabela</a>
+      <a href="sponsors.html" class="hover:text-green-700">Sponsorzy</a>
+      <a href="index.html#contact" class="hover:text-green-700">Kontakt</a>
+
+      <!-- FB (desktop) -->
+      <a
+        href="https://www.facebook.com/profile.php?id=100095156621506&locale=pl_PL"
+        target="_blank"
+        class="text-blue-600 hover:text-blue-800"
+      >
+        <div
+          class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="white"
+            viewBox="0 0 24 24"
+            class="w-3.5 h-3.5"
+          >
+            <path
+              d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 
+              1.326 24h11.494v-9.294H9.691V11.01h3.129V8.414c0-3.1 1.893-4.788 
+              4.659-4.788 1.325 0 2.463.099 2.796.143v3.24l-1.918.001c-1.504 
+              0-1.795.715-1.795 1.763v2.307h3.587l-.467 3.696h-3.12V24h6.116C23.403 
+              24 24 23.403 24 22.674V1.326C24 .597 23.403 0 22.675 0z"
+            />
+          </svg>
+        </div>
+      </a>
+
+      <!-- Logowanie (desktop) -->
+      <a
+        href="login.html"
+        class="ml-2 px-3 py-1 rounded-full border border-slate-300 text-[11px] md:text-xs hover:bg-slate-100"
+      >
+        Logowanie
+      </a>
+    </nav>
+
+    <!-- HAMBURGER (tylko mobile) -->
+    <button
+      id="navToggle"
+      class="md:hidden text-2xl"
+      aria-label="Otwórz menu"
+      type="button"
+    >
+      ☰
+    </button>
+  </div>
+
+  <!-- MENU MOBILNE (hamburger) -->
+  <div id="mobileNav" class="md:hidden border-t border-slate-200 hidden">
+    <div class="max-w-6xl mx-auto px-4 py-2 flex flex-col gap-2 text-sm">
+      <a href="index.html" class="hover:text-green-700">Strona główna</a>
+      <a href="team.html" class="hover:text-green-700">Drużyna</a>
+      <a href="schedule.html" class="hover:text-green-700">Terminarz</a>
+      <a href="stats.html" class="hover:text-green-700">Statystyki</a>
+      <a href="table.html" class="hover:text-green-700">Tabela</a>
+      <a href="sponsors.html" class="hover:text-green-700">Sponsorzy</a>
+      <a href="index.html#contact" class="hover:text-green-700">Kontakt</a>
+
+      <!-- FB w hamburgerze -->
+      <a
+        href="https://www.facebook.com/profile.php?id=100095156621506&locale=pl_PL"
+        target="_blank"
+        class="mt-1 inline-flex items-center gap-2 text-blue-700 hover:text-blue-900"
+      >
+        <span>Facebook</span>
+      </a>
+
+      <!-- Logowanie w hamburgerze -->
+      <a
+        href="login.html"
+        class="mt-1 px-3 py-1 rounded-full border border-slate-300 text-xs hover:bg-slate-100 inline-block w-max"
+      >
+        Logowanie
+      </a>
+    </div>
+  </div>
+</header>
+
+    
+    <main>
+      <!-- HERO -->
+      <section class="bg-green-700 text-white py-10">
+        <div class="max-w-6xl mx-auto px-4">
+          <h1 class="text-3xl font-extrabold">Terminarz</h1>
+          <p class="text-emerald-100 mt-2 text-sm md:text-base">
+            Lista wszystkich meczów w sezonie – domowych i wyjazdowych, wraz z wynikami.
+          </p>
+        </div>
+      </section>
+
+      <!-- FILTR / INFORMACJA -->
+      <section class="max-w-6xl mx-auto px-4 pt-6">
+        <div class="bg-white rounded-xl shadow-sm p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-xs md:text-sm">
+          <div>
+            <span class="font-semibold">Sezon:</span> 2025/2026
+          </div>
+          <div class="text-slate-500">
+            Mecze ligowe i sparingi drużyny seniorów.
+          </div>
+        </div>
+      </section>
+
+      <!-- TABELA TERMINARZA -->
+      <section class="max-w-6xl mx-auto px-4 py-6">
+        <div class="bg-white rounded-xl shadow-sm p-4">
+          <h2 class="text-sm font-semibold mb-3">Lista meczów</h2>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs md:text-sm">
+              <thead class="text-left text-slate-500 border-b">
+                <tr>
+                  <th class="py-2 pr-2">Data</th>
+                  <th class="py-2 pr-2">Godzina</th>
+                  <th class="py-2 pr-2">Przeciwnik</th>
+                  <th class="py-2 pr-2">Dom/Wyj.</th>
+                  <th class="py-2 pr-2">Typ</th>
+                  <th class="py-2 pr-2">Wynik</th>
+                </tr>
+              </thead>
+              <tbody id="matchesTableBody">
+                <!-- Wiersze meczów wstawi JavaScript -->
+              </tbody>
+            </table>
+          </div>
+
+          <p id="matchesMessage" class="text-xs text-slate-500 mt-3"></p>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 text-xs mt-6">
+      <div
+        class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2"
+      >
+        <div>© LKS Wilamowiczanka Wilamowice</div>
+        <div>Projekt pracy dyplomowej – Nikodem Marcinkiewicz</div>
+      </div>
+    </footer>
+
+    <!-- JS: pobieranie meczów z /api/matches -->
+    <script>
+      // prosty toggle mobile nav
+      document.getElementById('navToggle')?.addEventListener('click', () => {
+        const box = document.getElementById('mobileNav');
+        if (!box) return;
+        box.classList.toggle('hidden');
+      });
+      async function loadMatches() {
+        const tbody = document.getElementById('matchesTableBody');
+        const msgEl = document.getElementById('matchesMessage');
+
+        if (!tbody || !msgEl) {
+          console.error('Brakuje elementów matchesTableBody lub matchesMessage w HTML');
+          return;
+        }
+
+        msgEl.textContent = 'Ładuję terminarz...';
+
+        try {
+          const res = await fetch('/api/matches');
+          if (!res.ok) {
+            throw new Error('HTTP ' + res.status);
+          }
+
+          const data = await res.json();
+          console.log('Odpowiedź z /api/matches:', data);
+
+          const matches = Array.isArray(data) ? data : (data.matches || []);
+
+          if (!matches.length) {
+            msgEl.textContent = 'Brak meczów w bazie.';
+            tbody.innerHTML = '';
+            return;
+          }
+
+          msgEl.textContent = '';
+
+          // sortujemy rosnąco po dacie
+          matches.sort((a, b) => {
+            const da = a.date ? new Date(a.date) : 0;
+            const db = b.date ? new Date(b.date) : 0;
+            return da - db;
+          });
+
+          const rowsHtml = matches.map(m => {
+            const d = m.date ? new Date(m.date) : null;
+            const dateStr = d ? d.toLocaleDateString('pl-PL') : '';
+            const timeStr = m.time || '';
+            const opponent = m.opponent || '';
+            const homeAway = m.homeAway || '';
+            const type = m.type || '';
+
+            // wynik: korzystamy z pola "score" (np. "2 : 1" albo "- : -")
+            const score = m.score || '- : -';
+            const isPlayed = score !== '- : -';
+
+            return `
+              <tr class="border-b last:border-0 ${isPlayed ? '' : 'bg-emerald-50'}">
+                <td class="py-2 pr-2">${dateStr}</td>
+                <td class="py-2 pr-2">${timeStr}</td>
+                <td class="py-2 pr-2">${opponent}</td>
+                <td class="py-2 pr-2">${homeAway}</td>
+                <td class="py-2 pr-2">${type}</td>
+                <td class="py-2 pr-2 ${isPlayed ? 'font-semibold' : 'text-slate-400'}">
+                  ${score}
+                </td>
+              </tr>
+            `;
+          }).join('');
+
+          tbody.innerHTML = rowsHtml;
+
+        } catch (err) {
+          console.error('Błąd przy pobieraniu terminarza:', err);
+          msgEl.textContent = 'Błąd przy pobieraniu terminarza: ' + err.message;
+          tbody.innerHTML = '';
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', loadMatches);
+    </script>
+  </body>
+</html>
