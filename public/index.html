@@ -457,499 +457,288 @@
 
     <!-- LOGIKA POBIERANIA DANYCH -->
     <script>
-      // prosty toggle mobile nav
-      document.getElementById('navToggle')?.addEventListener('click', () => {
-        const box = document.getElementById('mobileNav');
-        if (!box) return;
-        box.classList.toggle('hidden');
-      });
+  // prosty toggle mobile nav
+  document.getElementById('navToggle')?.addEventListener('click', () => {
+    const box = document.getElementById('mobileNav');
+    if (!box) return;
+    box.classList.toggle('hidden');
+  });
 
-      // uniwersalny helper
-      async function fetchJson(url) {
-        const res = await fetch(url);
-        if (!res.ok) {
-          throw new Error('HTTP ' + res.status + ' dla ' + url);
-        }
-        return res.json();
+  // uniwersalny helper
+  async function fetchJson(url) {
+    const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error('HTTP ' + res.status + ' dla ' + url);
+    }
+    return res.json();
+  }
+
+  // -------- HERO: najbliższe mecze (wykorzystuje ?status=upcoming) --------
+  async function loadHeroMatches() {
+    const gridEl = document.getElementById('heroMatchesGrid');
+    const msgEl = document.getElementById('heroMatchesMessage');
+
+    if (!gridEl || !msgEl) {
+      console.warn('Brak elementów heroMatchesGrid / heroMatchesMessage w index.html');
+      return;
+    }
+
+    msgEl.textContent = 'Ładuję najbliższe mecze...';
+
+    try {
+      // Pobieramy tylko mecze nadchodzące
+      const data = await fetchJson('/api/matches?status=upcoming');
+      let matches = Array.isArray(data) ? data : data.matches || [];
+
+      // Sortujemy nadchodzące chronologicznie (najbliższy pierwszy)
+      matches.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      const upcoming = matches.slice(0, 3);
+
+      if (!upcoming.length) {
+        msgEl.textContent = 'Brak nadchodzących meczów.';
+        gridEl.innerHTML = '';
+        return;
       }
 
-      // -------- HERO: najbliższe mecze --------
-      async function loadHeroMatches() {
-        const gridEl = document.getElementById('heroMatchesGrid');
-        const msgEl = document.getElementById('heroMatchesMessage');
+      msgEl.textContent = '';
 
-        if (!gridEl || !msgEl) {
-          console.warn(
-            'Brak elementów heroMatchesGrid / heroMatchesMessage w index.html'
-          );
-          return;
-        }
+      const cardsHtml = upcoming
+        .map((m) => {
+          const d = m.date ? new Date(m.date) : null;
+          const date = d ? d.toISOString().slice(0, 10) : '';
+          const time = m.time || '';
+          const type = m.type || '';
+          const homeTeam = m.homeTeam || '';
+          const awayTeam = m.awayTeam || '';
+          const isHome = typeof m.isHome === 'boolean' ? m.isHome : m.homeAway === 'Dom';
 
-        msgEl.textContent = 'Ładuję najbliższe mecze...';
+          const venueLabel = isHome ? 'DOM' : 'WYJAZD';
+          const clubName = 'LKS Wilamowiczanka';
 
-        try {
-          const data = await fetchJson('/api/matches');
-          const matches = Array.isArray(data) ? data : data.matches || [];
+          let titleLine = isHome 
+            ? `${clubName} vs ${m.opponent || awayTeam || ''}`
+            : `${m.opponent || homeTeam || ''} vs ${clubName}`;
 
-          if (!matches.length) {
-            msgEl.textContent = 'Brak nadchodzących meczów.';
-            gridEl.innerHTML = '';
-            return;
-          }
-
-          // sortujemy po dacie (rosnąco)
-          const upcoming = matches
-            .filter((m) => m.date)
-            .sort((a, b) => new Date(a.date) - new Date(b.date))
-            .slice(0, 3);
-
-          if (!upcoming.length) {
-            msgEl.textContent = 'Brak nadchodzących meczów.';
-            gridEl.innerHTML = '';
-            return;
-          }
-
-          msgEl.textContent = '';
-
-          const cardsHtml = upcoming
-            .map((m) => {
-              const d = m.date ? new Date(m.date) : null;
-              const date = d ? d.toISOString().slice(0, 10) : '';
-              const time = m.time || '';
-              const type = m.type || '';
-              const homeTeam = m.homeTeam || '';
-              const awayTeam = m.awayTeam || '';
-              const isHome =
-                typeof m.isHome === 'boolean'
-                  ? m.isHome
-                  : m.homeAway === 'Dom';
-
-              const venueLabel = isHome ? 'DOM' : 'WYJAZD';
-              const clubName = 'LKS Wilamowiczanka';
-
-              let titleLine = '';
-              if (isHome) {
-                titleLine = `${clubName} vs ${awayTeam || m.opponent || ''}`;
-              } else {
-                titleLine = `${homeTeam || m.opponent || ''} vs ${clubName}`;
-              }
-
-              return `
-                <div class="bg-white/20 rounded-lg p-3">
-                  <div class="text-xs text-emerald-100">
-                    ${date} ${time ? '• ' + time : ''} • ${venueLabel}
-                  </div>
-                  <div class="font-semibold text-sm">
-                    ${titleLine}
-                  </div>
-                  <div class="text-[11px] text-emerald-100 mt-1">
-                    ${type || ''}
-                  </div>
-                </div>
-              `;
-            })
-            .join('');
-
-          gridEl.innerHTML = cardsHtml;
-        } catch (err) {
-          console.error('Błąd przy pobieraniu /api/matches (hero):', err);
-          msgEl.textContent =
-            'Błąd przy pobieraniu meczów: ' + err.message;
-          gridEl.innerHTML = '';
-        }
-      }
-
-      // -------- Pasek dyżurnych --------
-      function formatDutyRange(from, to) {
-        const f = from ? new Date(from) : null;
-        const t = to ? new Date(to) : null;
-        const opt = { day: '2-digit', month: '2-digit' };
-        const fStr = f ? f.toLocaleDateString('pl-PL', opt) : '';
-        const tStr = t ? t.toLocaleDateString('pl-PL', opt) : '';
-        if (fStr && tStr) return `(${fStr}–${tStr})`;
-        if (fStr) return `(${fStr})`;
-        if (tStr) return `(${tStr})`;
-        return '';
-      }
-
-      async function loadDutiesBar() {
-        const curRangeEl = document.getElementById('dutyCurrentRange');
-        const curPlayersEl = document.getElementById('dutyCurrentPlayers');
-        const nextRangeEl = document.getElementById('dutyNextRange');
-        const nextPlayersEl = document.getElementById('dutyNextPlayers');
-
-        if (!curRangeEl || !curPlayersEl || !nextRangeEl || !nextPlayersEl) {
-          return;
-        }
-
-        try {
-          const data = await fetchJson('/api/duties');
-          const duties = Array.isArray(data) ? data : data.duties || [];
-
-          const current = duties.find((d) => d.type === 'current');
-          const next = duties.find((d) => d.type === 'next');
-
-          if (current) {
-            curRangeEl.textContent = ' ' + formatDutyRange(current.from, current.to);
-            curPlayersEl.textContent = Array.isArray(current.players)
-              ? current.players.join(', ')
-              : '';
-          } else {
-            curRangeEl.textContent = '';
-            curPlayersEl.textContent = 'brak danych';
-          }
-
-          if (next) {
-            nextRangeEl.textContent = ' ' + formatDutyRange(next.from, next.to);
-            nextPlayersEl.textContent = Array.isArray(next.players)
-              ? next.players.join(', ')
-              : '';
-          } else {
-            nextRangeEl.textContent = '';
-            nextPlayersEl.textContent = 'brak danych';
-          }
-        } catch (err) {
-          console.error('Błąd przy pobieraniu /api/duties (pasek):', err);
-          curRangeEl.textContent = '';
-          curPlayersEl.textContent = 'błąd ładowania';
-          nextRangeEl.textContent = '';
-          nextPlayersEl.textContent = 'błąd ładowania';
-        }
-      }
-
-      // -------- Szybkie info --------
-      async function loadQuickInfo() {
-        const lastLineEl = document.getElementById('quickLastMatchLine');
-        const lastDetailsEl = document.getElementById('quickLastMatchDetails');
-        const tablePosEl = document.getElementById('quickTablePosition');
-        const tablePtsEl = document.getElementById('quickTablePoints');
-        const squadCountEl = document.getElementById('quickSquadCount');
-        const squadDetailsEl = document.getElementById('quickSquadDetails');
-
-        const CLUB_NAME = "LKS Wilamowiczanka";
-
-        try {
-          // Zawodnicy – liczebność
-          const playersData = await fetchJson('/api/players');
-          const players = Array.isArray(playersData) ? playersData : playersData.players || [];
-          squadCountEl.textContent = players.length || "0";
-          squadDetailsEl.textContent = "Drużyna seniorska • Sezon 2024/2025";
-
-          // -------- Ostatni mecz (NAPRAWA LOGIKI WYNIKU) --------
-          const matchesData = await fetchJson('/api/matches');
-          const matches = Array.isArray(matchesData)
-            ? matchesData
-            : matchesData.matches || [];
-
-          const played = matches
-            .filter(m =>
-              m.date && (
-                (typeof m.goalsFor === "number" && typeof m.goalsAgainst === "number") ||
-                (typeof m.score === "string" && m.score.includes(":"))
-              )
-            )
-            .sort((a, b) => new Date(b.date) - new Date(a.date));
-
-          if (played.length) {
-            const m = played[0];
-            const dateStr = new Date(m.date).toLocaleDateString("pl-PL");
-
-            // wyciągamy bramki LKS (gf) i rywala (ga)
-            let gf = 0;
-            let ga = 0;
-
-            if (typeof m.goalsFor === "number" && typeof m.goalsAgainst === "number") {
-              gf = m.goalsFor;
-              ga = m.goalsAgainst;
-            } else if (typeof m.score === "string") {
-              const cleaned = m.score.replace(/\s/g, "");
-              const parts = cleaned.split(":");
-              const s1 = parseInt(parts[0], 10);
-              const s2 = parseInt(parts[1], 10);
-              if (Number.isFinite(s1) && Number.isFinite(s2)) {
-                // zakładamy LKS : przeciwnik
-                gf = s1;
-                ga = s2;
-              }
-            }
-
-            const isHome = m.isHome ?? (m.homeAway === "Dom");
-            const opponent = m.opponent || "";
-            const club = CLUB_NAME;
-
-            // Ustalenie nazw drużyn
-            const homeTeam = m.homeTeam || (isHome ? club : opponent || "Gospodarz");
-            const awayTeam = m.awayTeam || (isHome ? opponent || "Goście" : club);
-
-            // Przeliczenie bramek na perspektywę gospodarza/gościa
-            const homeGoals = isHome ? gf : ga;
-            const awayGoals = isHome ? ga : gf;
-
-            const scoreStr = `${homeGoals} : ${awayGoals}`;
-
-            lastLineEl.textContent = `${homeTeam} ${scoreStr} ${awayTeam}`;
-            lastDetailsEl.textContent = `${dateStr} • ${m.type || "Mecz"}`;
-          } else {
-            lastLineEl.textContent = "Brak rozegranych meczów.";
-            lastDetailsEl.textContent = "";
-          }
-
-          // *** TABELA – POBIERAMY TYLKO MIEJSCE NASZEJ DRUŻYNY ***
-          const tableData = await fetchJson('/api/stats/league-table');
-          let rows = [];
-
-          if (Array.isArray(tableData)) rows = tableData;
-          else if (Array.isArray(tableData.table)) rows = tableData.table;
-          else rows = [];
-
-          if (!rows.length) {
-            tablePosEl.textContent = "–";
-            tablePtsEl.textContent = "–";
-            return;
-          }
-
-          const ourRow = rows.find(t =>
-            (t.teamName || t.team || "").toLowerCase()
-              .includes(CLUB_NAME.toLowerCase())
-          );
-
-          if (!ourRow) {
-            tablePosEl.textContent = "–";
-            tablePtsEl.textContent = "–";
-            return;
-          }
-
-          const pos = ourRow.position || "–";
-          const pts = ourRow.points ?? ourRow.pts ?? "–";
-
-          tablePosEl.textContent = `${pos}. miejsce`;
-          tablePtsEl.textContent = `${pts} punktów`;
-
-        } catch (err) {
-          console.error("Błąd w quick info:", err);
-          tablePosEl.textContent = "–";
-          tablePtsEl.textContent = "–";
-        }
-      }
-
-      // -------- Drużyna (skrót) --------
-      async function loadTeamShort() {
-        const listEl = document.getElementById('teamShortList');
-        const msgEl = document.getElementById('teamShortMessage');
-        if (!listEl || !msgEl) return;
-
-        msgEl.textContent = 'Ładuję kadrę...';
-
-        try {
-          const data = await fetchJson('/api/players');
-          const players = Array.isArray(data)
-            ? data
-            : data.players || [];
-
-          if (!players.length) {
-            msgEl.textContent = 'Brak zawodników w bazie.';
-            listEl.innerHTML = '';
-            return;
-          }
-
-          const sorted = [...players].sort((a, b) => {
-            const na = a.shirtNumber ?? 999;
-            const nb = b.shirtNumber ?? 999;
-            return na - nb;
-          });
-
-          const chosen = sorted.slice(0, 3);
-
-          const cardsHtml = chosen
-            .map((p) => {
-              const fullName = `${p.firstName || ''} ${
-                p.lastName || ''
-              }`.trim();
-              const position = p.position || '';
-              const number =
-                p.shirtNumber != null ? `Nr ${p.shirtNumber}` : '';
-              const birth =
-                p.birthDate
-                  ? new Date(p.birthDate)
-                      .getFullYear()
-                      .toString()
-                  : '';
-              const foot =
-                p.preferredFoot === 'prawa'
-                  ? 'prawa'
-                  : p.preferredFoot === 'lewa'
-                  ? 'lewa'
-                  : p.preferredFoot === 'obie'
-                  ? 'obie'
-                  : null;
-
-              return `
-              <div class="border border-slate-200 rounded-lg p-3 flex flex-col gap-1">
-                <div class="flex items-center gap-3">
-                  <div class="w-14 h-14 rounded-full overflow-hidden">
-                      <img 
-                        src="/images/player.png" 
-                        alt="Zawodnik"
-                        class="w-full h-full object-cover"
-                      >
-                    </div>
-                  <div>
-                    <div class="font-semibold text-sm">${fullName}</div>
-                    <div class="text-xs text-slate-500">
-                      ${position || 'Zawodnik'}${
-                number ? ' • ' + number : ''
-              }
-                    </div>
-                  </div>
-                </div>
-                <div class="text-xs text-slate-500 mt-1">
-                  ${
-                    foot
-                      ? 'Lepsza noga: ' + foot
-                      : 'Lepsza noga: brak danych'
-                  }${
-                birth ? ' • Rocznik ' + birth : ''
-              }
-                </div>
+          return `
+            <div class="bg-white/20 rounded-lg p-3">
+              <div class="text-xs text-emerald-100">
+                ${date} ${time ? '• ' + time : ''} • ${venueLabel}
               </div>
-            `;
-            })
-            .join('');
+              <div class="font-semibold text-sm">
+                ${titleLine}
+              </div>
+              <div class="text-[11px] text-emerald-100 mt-1">
+                ${type || ''}
+              </div>
+            </div>
+          `;
+        })
+        .join('');
 
-          listEl.innerHTML = cardsHtml;
-          msgEl.textContent = '';
-        } catch (err) {
-          console.error('Błąd przy ładowaniu drużyny (skrót):', err);
-          msgEl.textContent =
-            'Błąd przy pobieraniu listy zawodników.';
-          listEl.innerHTML = '';
-        }
+      gridEl.innerHTML = cardsHtml;
+    } catch (err) {
+      console.error('Błąd przy pobieraniu /api/matches (hero):', err);
+      msgEl.textContent = 'Błąd przy pobieraniu meczów: ' + err.message;
+      gridEl.innerHTML = '';
+    }
+  }
+
+  // -------- Pasek dyżurnych --------
+  function formatDutyRange(from, to) {
+    const f = from ? new Date(from) : null;
+    const t = to ? new Date(to) : null;
+    const opt = { day: '2-digit', month: '2-digit' };
+    const fStr = f ? f.toLocaleDateString('pl-PL', opt) : '';
+    const tStr = t ? t.toLocaleDateString('pl-PL', opt) : '';
+    if (fStr && tStr) return `(${fStr}–${tStr})`;
+    if (fStr) return `(${fStr})`;
+    if (tStr) return `(${tStr})`;
+    return '';
+  }
+
+  async function loadDutiesBar() {
+    const curRangeEl = document.getElementById('dutyCurrentRange');
+    const curPlayersEl = document.getElementById('dutyCurrentPlayers');
+    const nextRangeEl = document.getElementById('dutyNextRange');
+    const nextPlayersEl = document.getElementById('dutyNextPlayers');
+
+    if (!curRangeEl || !curPlayersEl || !nextRangeEl || !nextPlayersEl) return;
+
+    try {
+      const data = await fetchJson('/api/duties');
+      const duties = Array.isArray(data) ? data : data.duties || [];
+      const current = duties.find((d) => d.type === 'current');
+      const next = duties.find((d) => d.type === 'next');
+
+      if (current) {
+        curRangeEl.textContent = ' ' + formatDutyRange(current.from, current.to);
+        curPlayersEl.textContent = Array.isArray(current.players) ? current.players.join(', ') : '';
+      } else {
+        curPlayersEl.textContent = 'brak danych';
       }
 
-      // -------- Statystyki sezonu (skrót) --------
-      async function loadStatsShort() {
-        const scorersListEl = document.getElementById('topScorersList');
-        const scorersMsgEl = document.getElementById('topScorersMessage');
-        const matchesEl = document.getElementById('teamStatsMatches');
-        const gfEl = document.getElementById('teamStatsGoalsFor');
-        const gaEl = document.getElementById('teamStatsGoalsAgainst');
-        const gdEl = document.getElementById('teamStatsGoalDiff');
-        const statsMsgEl = document.getElementById('teamStatsMessage');
+      if (next) {
+        nextRangeEl.textContent = ' ' + formatDutyRange(next.from, next.to);
+        nextPlayersEl.textContent = Array.isArray(next.players) ? next.players.join(', ') : '';
+      } else {
+        nextPlayersEl.textContent = 'brak danych';
+      }
+    } catch (err) {
+      console.error('Błąd przy pobieraniu /api/duties (pasek):', err);
+    }
+  }
 
-        if (
-          !scorersListEl ||
-          !scorersMsgEl ||
-          !matchesEl ||
-          !gfEl ||
-          !gaEl ||
-          !gdEl ||
-          !statsMsgEl
-        ) {
-          return;
+  // -------- Szybkie info (wykorzystuje ?status=played dla ostatniego meczu) --------
+  async function loadQuickInfo() {
+    const lastLineEl = document.getElementById('quickLastMatchLine');
+    const lastDetailsEl = document.getElementById('quickLastMatchDetails');
+    const tablePosEl = document.getElementById('quickTablePosition');
+    const tablePtsEl = document.getElementById('quickTablePoints');
+    const squadCountEl = document.getElementById('quickSquadCount');
+    const squadDetailsEl = document.getElementById('quickSquadDetails');
+
+    const CLUB_NAME = "LKS Wilamowiczanka";
+
+    try {
+      // 1) Zawodnicy
+      const playersData = await fetchJson('/api/players');
+      const players = Array.isArray(playersData) ? playersData : playersData.players || [];
+      squadCountEl.textContent = players.length || "0";
+      squadDetailsEl.textContent = "Drużyna seniorska • Sezon 2024/2025";
+
+      // 2) Ostatni mecz - pobieramy tylko rozegrane
+      const playedData = await fetchJson('/api/matches?status=played');
+      const played = Array.isArray(playedData) ? playedData : playedData.matches || [];
+
+      if (played.length) {
+        // Backend sortuje date: -1, więc pierwszy element to najświeższy rozegrany
+        const m = played[0];
+        const dateStr = new Date(m.date).toLocaleDateString("pl-PL");
+
+        let gf = 0, ga = 0;
+        if (typeof m.score === "string") {
+          const parts = m.score.replace(/\s/g, "").split(":");
+          gf = parseInt(parts[0], 10) || 0;
+          ga = parseInt(parts[1], 10) || 0;
         }
 
-        const safeNumber = (value) => {
-          const n = Number(value);
-          return Number.isFinite(n) ? n : 0;
-        };
+        const isHome = m.isHome ?? (m.homeAway === "Dom");
+        const opponent = m.opponent || "Rywal";
+        const homeTeam = isHome ? CLUB_NAME : opponent;
+        const awayTeam = isHome ? opponent : CLUB_NAME;
 
-        scorersMsgEl.textContent = 'Ładuję statystyki...';
-        statsMsgEl.textContent = '';
-
-        try {
-          // 1) Zawodnicy -> top strzelcy
-          const playersData = await fetchJson('/api/players');
-          const players = Array.isArray(playersData)
-            ? playersData
-            : playersData.players || [];
-
-          const sortedByGoals = [...players]
-            .sort((a, b) => {
-              const ga = safeNumber(a.goals || a.bramki);
-              const gb = safeNumber(b.goals || b.bramki);
-              return gb - ga;
-            })
-            .slice(0, 3);
-
-          if (!sortedByGoals.length) {
-            scorersListEl.innerHTML = '';
-            scorersMsgEl.textContent = 'Brak danych o bramkach.';
-          } else {
-            scorersMsgEl.textContent = '';
-            scorersListEl.innerHTML = sortedByGoals
-              .map((p, idx) => {
-                const fullName = `${p.firstName || ''} ${p.lastName || ''}`.trim();
-                const goals = safeNumber(p.goals || p.bramki);
-                return `
-                  <li>
-                    ${idx + 1}. ${fullName} – <span class="font-semibold">${goals} bramek</span>
-                  </li>
-                `;
-              })
-              .join('');
-          }
-
-          // 2) Mecze -> podsumowanie drużyny
-          const matchesData = await fetchJson('/api/matches');
-          const matches = Array.isArray(matchesData)
-            ? matchesData
-            : matchesData.matches || [];
-
-          const totalMatches = matches.length;
-          let goalsFor = 0;
-          let goalsAgainst = 0;
-
-          for (const m of matches) {
-            if (
-              typeof m.goalsFor === 'number' &&
-              typeof m.goalsAgainst === 'number'
-            ) {
-              goalsFor += m.goalsFor;
-              goalsAgainst += m.goalsAgainst;
-              continue;
-            }
-
-            if (m.score && typeof m.score === 'string') {
-              const cleaned = m.score.replace(/\s/g, '');
-              const [g1, g2] = cleaned
-                .split(':')
-                .map((x) => parseInt(x, 10));
-              if (Number.isFinite(g1) && Number.isFinite(g2)) {
-                goalsFor += g1;
-                goalsAgainst += g2;
-              }
-            }
-          }
-
-          matchesEl.textContent = totalMatches || 0;
-          gfEl.textContent = goalsFor;
-          gaEl.textContent = goalsAgainst;
-          const diff = goalsFor - goalsAgainst;
-          gdEl.textContent = (diff > 0 ? '+' : '') + diff;
-
-          statsMsgEl.textContent = totalMatches
-            ? ''
-            : 'Brak meczów w bazie.';
-        } catch (err) {
-          console.error('Błąd przy ładowaniu statystyk (skrót):', err);
-          scorersListEl.innerHTML = '';
-          scorersMsgEl.textContent = 'Błąd przy pobieraniu danych.';
-          matchesEl.textContent = '–';
-          gfEl.textContent = '–';
-          gaEl.textContent = '–';
-          gdEl.textContent = '–';
-          statsMsgEl.textContent = 'Błąd ładowania statystyk.';
-        }
+        lastLineEl.textContent = `${homeTeam} ${gf}:${ga} ${awayTeam}`;
+        lastDetailsEl.textContent = `${dateStr} • ${m.type || "Mecz"}`;
+      } else {
+        lastLineEl.textContent = "Brak rozegranych meczów.";
       }
 
-      // start
-      document.addEventListener('DOMContentLoaded', () => {
-        loadHeroMatches();
-        loadDutiesBar();
-        loadQuickInfo();
-        loadTeamShort();
-        loadStatsShort();
+      // 3) Tabela
+      const tableData = await fetchJson('/api/stats/league-table');
+      const rows = Array.isArray(tableData) ? tableData : tableData.table || [];
+      const ourRow = rows.find(t => (t.teamName || t.team || "").toLowerCase().includes(CLUB_NAME.toLowerCase()));
+
+      if (ourRow) {
+        tablePosEl.textContent = `${ourRow.position || "–"}. miejsce`;
+        tablePtsEl.textContent = `${ourRow.points ?? ourRow.pts ?? "–"} punktów`;
+      }
+    } catch (err) {
+      console.error("Błąd w quick info:", err);
+    }
+  }
+
+  // -------- Drużyna (skrót) --------
+  async function loadTeamShort() {
+    const listEl = document.getElementById('teamShortList');
+    const msgEl = document.getElementById('teamShortMessage');
+    if (!listEl || !msgEl) return;
+
+    try {
+      const data = await fetchJson('/api/players');
+      const players = Array.isArray(data) ? data : data.players || [];
+      if (!players.length) {
+        msgEl.textContent = 'Brak zawodników.';
+        return;
+      }
+
+      const chosen = [...players]
+        .sort((a, b) => (a.shirtNumber ?? 999) - (b.shirtNumber ?? 999))
+        .slice(0, 3);
+
+      listEl.innerHTML = chosen.map(p => `
+        <div class="border border-slate-200 rounded-lg p-3 flex flex-col gap-1">
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 rounded-full overflow-hidden bg-slate-100">
+              <img src="/images/player.png" alt="Zawodnik" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <div class="font-semibold text-sm">${p.firstName || ''} ${p.lastName || ''}</div>
+              <div class="text-xs text-slate-500">${p.position || 'Zawodnik'}${p.shirtNumber != null ? ' • Nr ' + p.shirtNumber : ''}</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      msgEl.textContent = '';
+    } catch (err) {
+      msgEl.textContent = 'Błąd ładowania.';
+    }
+  }
+
+  // -------- Statystyki sezonu (skrót - wykorzystuje ?status=played) --------
+  async function loadStatsShort() {
+    const scorersListEl = document.getElementById('topScorersList');
+    const matchesEl = document.getElementById('teamStatsMatches');
+    const gfEl = document.getElementById('teamStatsGoalsFor');
+    const gaEl = document.getElementById('teamStatsGoalsAgainst');
+    const gdEl = document.getElementById('teamStatsGoalDiff');
+
+    try {
+      // Top strzelcy
+      const playersData = await fetchJson('/api/players');
+      const players = Array.isArray(playersData) ? playersData : playersData.players || [];
+      const top = [...players]
+        .sort((a, b) => (b.goals || 0) - (a.goals || 0))
+        .slice(0, 3);
+
+      scorersListEl.innerHTML = top.map((p, i) => `
+        <li>${i + 1}. ${p.firstName} ${p.lastName} – <span class="font-semibold">${p.goals || 0} bramek</span></li>
+      `).join('');
+
+      // Statystyki bramkowe z rozegranych meczów
+      const playedData = await fetchJson('/api/matches?status=played');
+      const played = Array.isArray(playedData) ? playedData : playedData.matches || [];
+
+      let totalGf = 0, totalGa = 0;
+      played.forEach(m => {
+        if (m.score && m.score.includes(':')) {
+          const parts = m.score.replace(/\s/g, "").split(":");
+          const g1 = parseInt(parts[0], 10) || 0;
+          const g2 = parseInt(parts[1], 10) || 0;
+          // Tutaj logika zależy od tego czy w bazie score jest zawsze LKS:Rywal czy Home:Away
+          // Zakładając, że Twoja funkcja pomocnicza w backendzie zwraca gole poprawnie:
+          totalGf += g1;
+          totalGa += g2;
+        }
       });
-    </script>
+
+      matchesEl.textContent = played.length;
+      gfEl.textContent = totalGf;
+      gaEl.textContent = totalGa;
+      const diff = totalGf - totalGa;
+      gdEl.textContent = (diff > 0 ? '+' : '') + diff;
+    } catch (err) {
+      console.error('Błąd statystyk:', err);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadHeroMatches();
+    loadDutiesBar();
+    loadQuickInfo();
+    loadTeamShort();
+    loadStatsShort();
+  });
+</script>
   </body>
 </html>

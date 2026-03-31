@@ -219,11 +219,11 @@
           msgEl.textContent = '';
 
           // sortujemy rosnąco po dacie
-          matches.sort((a, b) => {
-            const da = a.date ? new Date(a.date) : 0;
-            const db = b.date ? new Date(b.date) : 0;
-            return da - db;
-          });
+          // matches.sort((a, b) => {
+          //   const da = a.date ? new Date(a.date) : 0;
+          //   const db = b.date ? new Date(b.date) : 0;
+          //   return da - db;
+          // });
 
           const rowsHtml = matches.map(m => {
             const d = m.date ? new Date(m.date) : null;
@@ -231,7 +231,7 @@
             const timeStr = m.time || '';
             const opponent = m.opponent || '';
             const homeAway = m.homeAway || '';
-            const type = m.type || '';
+            const type = m.type || ''; 
 
             // wynik: korzystamy z pola "score" (np. "2 : 1" albo "- : -")
             const score = m.score || '- : -';

@@ -5,7 +5,24 @@ const Match = require('../models/Match');
 
 router.get('/', async (req, res) => {
   try {
-    const matches = await Match.find().sort({ date: 1 }).lean();
+    const { status } = req.query;
+    let filter = {};
+    const now = new Date(); // Pobieramy aktualną datę i godzinę
+
+    // Logika filtrowania na podstawie daty
+    if (status === 'played') {
+      // Mecze rozegrane: data jest mniejsza niż "teraz"
+      filter.date = { $lt: now };
+    } else if (status === 'upcoming') {
+      // Mecze nadchodzące: data jest większa lub równa "teraz"
+      filter.date = { $gte: now };
+    }
+
+    const matches = await Match.find(filter)
+      // Dla rozegranych sortujemy od najnowszych, dla nadchodzących od najbliższych
+      .sort({ date: status === 'upcoming' ? 1 : -1 })
+      .lean();
+
     res.json(matches);
   } catch (err) {
     console.error('Błąd pobierania meczów:', err);
