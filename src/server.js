@@ -31,8 +31,6 @@ app.use(session({
   }
 }));
 
-app.use(express.static(path.join(__dirname, '..', 'public')));
-
 app.use('/api/players', playerRoutes);
 app.use('/api/matches', matchRoutes);
 app.use('/api/stats', statsRoutes);
@@ -290,6 +288,15 @@ app.get('/api/debug/seed-duties', async (req, res) => {
   }
 });
 
+const distPath = path.join(__dirname, '..', 'dist');
+
+app.use(express.static(distPath));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Server działa na http://localhost:${PORT}`);
 });
+
